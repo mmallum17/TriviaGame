@@ -1,0 +1,123 @@
+{
+  "response_code": 0,
+  "results": [
+    {
+      "category": "Science: Computers",
+      "type": "multiple",
+      "difficulty": "easy",
+      "question": "Which company was established on April 1st, 1976 by Steve Jobs, Steve Wozniak and Ronald Wayne?",
+      "correct_answer": "Apple",
+      "incorrect_answers": [
+        "Microsoft",
+        "Atari",
+        "Commodore"
+      ]
+    },
+    {
+      "category": "Entertainment: Video Games",
+      "type": "multiple",
+      "difficulty": "medium",
+      "question": "What is the main character of Metal Gear Solid 2?",
+      "correct_answer": "Raiden",
+      "incorrect_answers": [
+        "Solidus Snake",
+        "Big Boss",
+        "Venom Snake"
+      ]
+    },
+    {
+      "category": "Entertainment: Music",
+      "type": "multiple",
+      "difficulty": "hard",
+      "question": "What was the last Aphex Twin album released before his decade-long hiatus?",
+      "correct_answer": "Drukqs",
+      "incorrect_answers": [
+        "Windowlicker",
+        "Syro",
+        "Collected Ambient Works 85-92"
+      ]
+    },
+    {
+      "category": "Entertainment: Video Games",
+      "type": "multiple",
+      "difficulty": "medium",
+      "question": "Just Cause 2 was mainly set in what fictional Southeast Asian island country?",
+      "correct_answer": "Panau",
+      "incorrect_answers": [
+        "Davao",
+        "Macau",
+        "Palau"
+      ]
+    },
+    {
+      "category": "Entertainment: Music",
+      "type": "boolean",
+      "difficulty": "medium",
+      "question": "Norwegian producer Kygo released a remix of the song &quot;Sexual Healing&quot; by Marvin Gaye.",
+      "correct_answer": "True",
+      "incorrect_answers": [
+        "False"
+      ]
+    },
+    {
+      "category": "Entertainment: Music",
+      "type": "multiple",
+      "difficulty": "medium",
+      "question": "Which of these is the name of an American psychedelic rock band formed in 2002 by Benjamin Goldwasser and Andrew VanWyngarden?",
+      "correct_answer": "MGMT",
+      "incorrect_answers": [
+        "MSTRKRFT",
+        "STRFKR",
+        "SBTRKT"
+      ]
+    },
+    {
+      "category": "Entertainment: Television",
+      "type": "multiple",
+      "difficulty": "medium",
+      "question": "What was the name of Ross&#039; pet monkey on &quot;Friends&quot;?",
+      "correct_answer": "Marcel",
+      "incorrect_answers": [
+        "Jojo",
+        "George",
+        "Champ"
+      ]
+    },
+    {
+      "category": "Science: Gadgets",
+      "type": "multiple",
+      "difficulty": "easy",
+      "question": "When was the Tamagotchi digital pet released?",
+      "correct_answer": "1996",
+      "incorrect_answers": [
+        "1989",
+        "1992",
+        "1990"
+      ]
+    },
+    {
+      "category": "Entertainment: Books",
+      "type": "multiple",
+      "difficulty": "hard",
+      "question": "Which of the following is NOT a work done by Shakespeare?",
+      "correct_answer": "Trial of Temperance",
+      "incorrect_answers": [
+        "Measure For Measure",
+        "Titus Andronicus",
+        "Cymbeline"
+      ]
+    },
+    {
+      "category": "Entertainment: Music",
+      "type": "multiple",
+      "difficulty": "medium",
+      "question": "When was the 3rd album &quot;Notes from the Underground&quot; of the band &quot;Hollywood Undead&quot; released?",
+      "correct_answer": "2013",
+      "incorrect_answers": [
+        "2011",
+        "2014",
+        "2009"
+      ]
+    }
+  ]
+}
