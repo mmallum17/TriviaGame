@@ -9,7 +9,10 @@
 #ifndef KEYPAD_H
 #define KEYPAD_H
 
+#define IOnM P3_5
+
 unsigned char getKey();
+char __xdata* getKeys(unsigned int number);
 
 unsigned char getKey()
 {
@@ -97,6 +100,24 @@ unsigned char getKey()
 				}
 			}
 		}while(1);	/*Wait for key to be pressed*/
+}
+
+char __xdata* getKeys(unsigned int number)
+{
+	char __xdata input[11] = "";
+	unsigned int i;
+	char key;
+
+	for(i = 0; i < number; i++)
+	{
+		IOnM = 0;
+		input[i] = getKey();
+		key = input[i];
+		writeData(key);
+	}
+	IOnM = 0;
+	input[i] = 0;
+	return input;
 }
 
 #endif

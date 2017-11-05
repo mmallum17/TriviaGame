@@ -13,6 +13,7 @@
 #include "lcd.h"
 #include "rtc.h"
 #include "uart.h"
+#include "wifi.h"
 
 __xdata unsigned char __at (0xC000) sevenSeg;
 
@@ -43,12 +44,83 @@ void checkConnection()
 {
 	char ch;
 	char key;
-	char __xdata date[9] = "";
+	char __xdata* date;
+	/*char __xdata temp[4];*/
 	unsigned long count = 524280;
 	int i = 0;
 
+	/* Initial Start-Up Read*/
+	wifiRead(524280);
+	delayXms(200);
+
+	/*AT*/
+	clearLcd();
+	printf("AT");
+	nextLine();
+	wifiWrite("AT");
+	wifiRead(524280);
+	delayXms(200);
+
+	/*AT+CIPSTART*/
+	clearLcd();
+	printf("AT+CIPSTART");
+	nextLine();
+	wifiWrite("AT+CIPSTART=\"TCP\",\"18.221.30.192\",3000");
+	wifiRead(174760);
+	delayXms(200);
+
+	/*AT+CIPMODE*/
+	clearLcd();
+	printf("AT+CIPMODE");
+	nextLine();
+	wifiWrite("AT+CIPMODE=1");
+	wifiRead(174760);
+	delayXms(200);
+
+	/*AT+CIPSEND*/
+	clearLcd();
+	printf("AT+CIPSEND");
+	nextLine();
+	wifiWrite("AT+CIPSEND");
+	wifiRead(174760);
+	delayXms(200);
+
+	/*Get the date and send to server*/
+	clearLcd();
+	writeString("Date: ");	/*Prompt for start address*/
+	date = getKeys(8);
+	nextLine();
+	serverWriteX(date);
+	wifiRead(524280);
+	delayXms(500);
+
+	/*End transparent transmission*/
+	clearLcd();
+	IOnM = 0;
+	printf("+++");
+	nextLine();
+	serverWrite("+++");
+	wifiRead(174760);
+	delayXms(1000);
+
+	/*AT+CIPMODE*/
+	clearLcd();
+	printf("AT+CIPMODE");
+	nextLine();
+	wifiWrite("AT+CIPMODE=0");
+	wifiRead(174760);
+	delayXms(200);
+
+	/*AT+CIPCLOSE*/
+	clearLcd();
+	printf("AT+CIPCLOSE");
+	nextLine();
+	wifiWrite("AT+CIPCLOSE");
+	wifiRead(174760);
+
+	while(1);
 	/*delayXms(1000);*/
-	while(count > 0)
+	/*while(count > 0)
 	{
 		if(RI==1)
 		{
@@ -58,7 +130,7 @@ void checkConnection()
 		}
 		count--;
 		/*delayXms(250);*/
-	}
+	/*}
 	count = 524280;
 	delayXms(500);
 	clearLcd();
@@ -78,7 +150,7 @@ void checkConnection()
 
 	/*while(1)
 	{*/
-	while(count > 0)
+	/*while(count > 0)
 	{
 		if(RI==1)
 		{
@@ -88,10 +160,10 @@ void checkConnection()
 		}
 		count--;
 		/*delayXms(250);*/
-	}
+	/*}
 	/*}*/
 	/*printf("HERE");*/
-	delayXms(500);
+	/*delayXms(500);
 	clearLcd();
 	printf("AT+CIPSTART");
 	nextLine();
@@ -108,7 +180,7 @@ void checkConnection()
 		}
 		count--;
 		/*delayXms(250);*/
-	}
+	/*}
 
 	delayXms(500);
 	clearLcd();
@@ -127,7 +199,7 @@ void checkConnection()
 		}
 		count--;
 		/*delayXms(250);*/
-	}
+	/*}
 
 	delayXms(500);
 	clearLcd();
@@ -138,7 +210,7 @@ void checkConnection()
 	UART_TxChar('E');
 	UART_TxChar('S');
 	UART_TxChar('T');*/
-	wifiWrite("AT+CIPSEND");
+	/*wifiWrite("AT+CIPSEND");
 	count = 524280;
 	while(count > 0)
 	{
@@ -150,13 +222,13 @@ void checkConnection()
 		}
 		count--;
 		/*delayXms(250);*/
-	}
+	/*}
 
 	delayXms(500);
 	clearLcd();
 
 	writeString("Date: ");	/*Prompt for start address*/
-	IOnM = 0;
+	/*IOnM = 0;
 	date[0] = getKey();
 	key = date[0];
 	writeData(key);
@@ -197,7 +269,7 @@ void checkConnection()
 		i++;
 	}
 	/*printf("TEST");*/
-	nextLine();
+	/*nextLine();
 
 	/*wifiWrite("AT+CIPMODE=1");*/
 	/*UART_TxChar('2');
@@ -208,7 +280,7 @@ void checkConnection()
 	UART_TxChar('1');
 	UART_TxChar('0');
 	UART_TxChar('1');*/
-	count = 1048560;
+	/*count = 1048560;
 	while(count > 0)
 	{
 		if(RI==1)
@@ -219,7 +291,7 @@ void checkConnection()
 		}
 		count--;
 		/*delayXms(250);*/
-	}
+	/*}
 
 	delayXms(500);
 	clearLcd();
@@ -230,7 +302,7 @@ void checkConnection()
 	UART_TxChar('+');
 	UART_TxChar('+');
 	/*wifiWrite("AT+CIPMODE=1");*/
-	count = 524280;
+	/*count = 524280;
 	while(count > 0)
 	{
 		if(RI==1)
@@ -241,7 +313,7 @@ void checkConnection()
 		}
 		count--;
 		/*delayXms(250);*/
-	}
+	/*}
 
 	delayXms(1000);
 	clearLcd();
@@ -260,7 +332,7 @@ void checkConnection()
 		}
 		count--;
 		/*delayXms(250);*/
-	}
+	/*}
 
 	delayXms(500);
 	clearLcd();
@@ -279,8 +351,8 @@ void checkConnection()
 		}
 		count--;
 		/*delayXms(250);*/
-	}
-	while(1);
+	/*}
+	while(1);*/
 }
 
 void wifiConnect(char* type, char* IP, int port)
@@ -288,7 +360,7 @@ void wifiConnect(char* type, char* IP, int port)
 	wifiWrite("AT+CIPSTART=\"TCP\",\"18.221.30.192\",3000" );
 }
 
-void wifiWrite(char* string)
+/*void wifiWrite(char* string)
 {
 	while(*string)
 	{
@@ -296,4 +368,4 @@ void wifiWrite(char* string)
 	}
 	UART_TxChar(0xD);
 	UART_TxChar(0xA);
-}
+}*/
