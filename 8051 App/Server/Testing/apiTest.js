@@ -10,7 +10,7 @@ let options = {
 
 rp(options).then(function(questions){
     /*console.log(JSON.stringify(questions));*/
-    console.log(questions.results[0].question);
+    console.log(questions.results[0].incorrect_answers[0]);
     console.log(entities.decode(JSON.stringify(questions.results[0])));
 })
 .catch(function(err){
