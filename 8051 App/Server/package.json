@@ -1,5 +1,5 @@
 {
-  "name": "8051 Server",
+  "name": "Server",
   "version": "0.0.1",
   "dependencies": {
     "html-entities": "^1.2.1",
