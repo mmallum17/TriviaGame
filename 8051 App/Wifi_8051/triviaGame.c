@@ -26,7 +26,7 @@ void main()
 {
 	initBoard();
 	lightBlue();
-
+	IOnM = 0;
 	/*startGame();*/
 	checkConnection();
 	/*clearLcd();*/
@@ -96,6 +96,7 @@ void checkConnection()
 	wifiRead(524280);
 	delayXms(500);*/
 
+	IOnM = 0;
 	startGame();
 
 	/*End transparent transmission*/
@@ -133,22 +134,44 @@ void wifiConnect(char* type, char* IP, int port)
 void startGame()
 {
 	int correct = 0;
-	char startText[24] = "PRESS ANY KEY TO START!";
-	char instructions[30] = "YOU'LL BE ASKED 10 QUESTIONS!";
+	char __xdata startText[24] = "PRESS ANY KEY TO START!";
+	char __xdata instructions[28] = "TRY TO ANSWER 10 QUESTIONS!";
 	char __xdata* read;
+	/*IOnM = 0;
+	startText = (char __xdata*)malloc(9 * sizeof(char));*/
+	/*char __xdata* instructions = ()char __xdata*)calloc(30, sizeof(char));*/
+
+	/*startText[0] = 'H';
+	startText[1] = 'I';
+	startText[2] = ' ';
+	startText[3] = 'T';
+	startText[4] = 'H';
+	startText[5] = 'E';
+	startText[6] = 'R';
+	startText[7] = 'E';
+	startText[8] = 0;*/
+	/*char __xdata* read;*/
+	/*char letter;*/
 
 	/*Display Menu*/
 	clearLcd();
 	IOnM = 0;
-	writeString(startText);
+	writeStringX(startText);
 	nextLine();
-	writeString(instructions);
+	writeStringX(instructions);
 	getKey();
 
 	/*Get questions*/
 	clearLcd();
 	serverWrite("GET");
-	read = wifiRead(524280, 0);
-	writeStringX(read);
-	delayXms(2000);
+	IOnM = 0;
+ 	read = wifiRead(524280, 0);
+ 	writeStringX(read);
+ 	delayXms(2000);
+	/*letter = read[0];
+	printf("%c", letter);
+	letter = read[1];
+	printf("%c", letter);*/
+	/*writeStringX(read);*/
+	/*delayXms(2000);*/
 }

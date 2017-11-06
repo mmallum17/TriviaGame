@@ -120,9 +120,57 @@ void writeString(char* string)
 
 void writeStringX(char __xdata* string)
 {
-	char* localString;
+	char localString[41] = "";
+	/*char* localString;*/
+	int length;
+	int i;
+	int mult = 0;
+	char letter;
+
 	IOnM = 0;
-	localString = (char*)calloc(1, strlen(string));
+	length = strlen(string) + 1;
+	/*localString = (char*)malloc(length * sizeof(char));*/
+	printf("%d", length);
+	/*nextLine();
+	IOnM = 0;*/
+	for(i = 0; i + 40 * mult < length; i++)
+	{
+		IOnM = 0;
+		letter = string[i + 40 * mult];
+		localString[i] = letter;
+		if(i == 39)
+		{
+			i = 0;
+			localString[40] = 0;
+			writeString(localString);
+			mult++;
+		}
+		/*printf("%c", localString[i]);*/
+	}
+	localString[i] = 0;
+	/*for(i = 0; i < 8; i++)
+	{
+		writeData(localString[i]);
+	}*/
+	/*localString[8] = 0;*/
+	/*letter = string[0];
+	printf("%c", letter);
+	IOnM = 0;
+	letter = string[1];
+	printf("%c", letter);
+	IOnM = 0;
+	letter = string[2];
+	printf("%c", letter);
+	IOnM = 0;
+	letter = string[3];
+	printf("%c", letter);
+	IOnM = 0;
+	letter = string[4];
+	printf("%c", letter);*/
+	/*localString = (char*)calloc(1, strlen(string));
+	strcpy(localString, string);*/
+	/*printf("%s", localString);*/
+	/*free(localString);*/
 	writeString(localString);
 }
 

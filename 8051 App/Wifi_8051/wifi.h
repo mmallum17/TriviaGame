@@ -11,6 +11,7 @@
 #define IOnM P3_5
 
 #include <8051.h>
+#include<stdlib.h>
 #include "uart.h"
 
 char __xdata* wifiRead(unsigned long timeout, int print);
@@ -49,9 +50,12 @@ void serverWrite(char* string)
 char __xdata* wifiRead(unsigned long timeout, int print)
 {
 	char ch;
-	char __xdata buffer[200] = "";
+	char __xdata buffer[100] = "";
 	int i = 0;
 
+
+	IOnM = 0;
+	/*buffer = (char*)calloc(1, sizeof(char));*/
 	while(timeout > 0)
 	{
 		IOnM = 0;
@@ -67,6 +71,7 @@ char __xdata* wifiRead(unsigned long timeout, int print)
 		}
 		timeout--;
 	}
+	IOnM = 0;
 	return buffer;
 }
 
