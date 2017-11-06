@@ -1,0 +1,9 @@
+{
+  "name": "Testing",
+  "version": "0.0.1",
+  "dependencies": {
+    "html-entities": "^1.2.1",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2"
+  }
+}
