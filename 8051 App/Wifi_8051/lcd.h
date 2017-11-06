@@ -10,6 +10,8 @@
 #define LCD_H
 
 #include <8051.h>
+#include <string.h>
+#include <stdlib.h>
 #include "delay.h"
 #define IOnM P3_5
 #define RW P3_4
@@ -18,7 +20,8 @@ __xdata unsigned char __at (0x8000) lcdCommand;
 __xdata unsigned char __at (0x8001) lcdData;
 __xdata unsigned char __at (0x2000) backlight;
 
-void writeString(unsigned char *string);
+void writeString(char *string);
+void writeStringX(char __xdata* string);
 void initLCD();
 void writeCommand(unsigned char command);
 void clearLcd();
@@ -29,19 +32,24 @@ void lightBlue();
 void nextLine();
 void writeData(unsigned char data);
 void putchar(char ch);
+int onFirst();
+int onSecond();
+int onThird();
+int onFourth();
 
 void initLCD()
 {
 	IOnM = 1;		/*Set for I/O*/
 	RW = 0;			/*Clear for write*/
 	delayXms(80);		/*Covers 40ms power up delay*/
-	lcdCommand = 0x3C;	/*Function set (8-bit interface, 2 lines, and 5x11 dot font)*/
+	lcdCommand = 0x3C;	/*Function set (8-bit interface, 2 line, and 5x11 dot font)*/
 	delayXus(60);		/*Covers 39us delay to execute function set*/
 	lcdCommand = 0x3C;	/*Function set (8-bit interface, 2 lines, and 5x11 dot font)*/
 	delayXus(60);		/*Covers 39us delay to execute function set*/
 	writeCommand(0x0F);	/*Turn off display*/
 	clearLcd();		/*Clear display*/
 	writeCommand(0x06);	/*Entry mode set (have cursor move to left and disable shift)*/
+	clearLcd();
 
 	backlight = 7;		/*Turn off all backlights*/
 }
@@ -87,12 +95,35 @@ void lightBlue()
 	backlight = 3;	/*Set backlight to blue*/
 }
 
-void writeString(unsigned char *string)
+void writeString(char* string)
 {
-	while(*string)
+	int length;
+	/*char test[40] = "HI THERE HELLO";*/
+	unsigned int address;
+	char delimiter[2] = " ";
+	/*printf("%s", string);*/
+	char* token = strtok(string, delimiter);
+
+	/*printf("%s ", token);*/
+	while(token != NULL)
 	{
-		writeData(*string++);
+		length = strlen(token);
+		address = readBusyAndAddress();
+		if((onFirst() && length + address > 0x13) || (onSecond() && length + address > 0x53) || (onThird() && length + address > 0x27) || (onFourth() && length + address > 0x67))
+		{
+			nextLine();
+		}
+		printf("%s ", token);
+		token = strtok(NULL, " ");
 	}
+}
+
+void writeStringX(char __xdata* string)
+{
+	char* localString;
+	IOnM = 0;
+	localString = (char*)calloc(1, strlen(string));
+	writeString(localString);
 }
 
 unsigned char readBusyAndAddress()
@@ -105,28 +136,90 @@ unsigned char readBusyAndAddress()
 
 void nextLine()
 {
-	unsigned char address = readBusyAndAddress();
-	if(address <= 0x13)		/*If on first line, go to second line*/
+	/*unsigned char address = readBusyAndAddress();*/
+	if(onFirst())		/*If on first line, go to second line*/
 	{
 		writeCommand(0xC0);
 	}
-	else if(address >= 0x40 && address <= 0x53)	/*If on second line go to third line*/
+	else if(onSecond())	/*If on second line go to third line*/
 	{
 		writeCommand(0x94);
 	}
-	else if(address >= 0x14 && address <= 0x27)	/*If on third line go to fourth line*/
+	else if(onThird())	/*If on third line go to fourth line*/
 	{
 		writeCommand(0xD4);
 	}
 	else	/*If on fourth line, clear LCD*/
 	{
+		/*delayXms(1000);*/
 		clearLcd();
 	}
 }
 
 void putchar(char ch)
 {
+	int address = readBusyAndAddress();
+	int lastColumn = 0;
+	if(address == 0x13 || address == 0x53 || address == 0x27 || address == 0x67)
+	{
+		lastColumn = 1;
+	}
 	writeData(ch);
+	if(lastColumn)
+	{
+		if(onThird())
+		{
+			writeCommand(0xC0);
+		}
+		else if(onFourth())
+		{
+			writeCommand(0x94);
+		}
+		else if(onSecond())
+		{
+			writeCommand(0xD4);
+		}
+	}
+}
+
+int onFirst()
+{
+	int address = readBusyAndAddress();
+	if(address >= 0x00 && address <= 0x13)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+int onSecond()
+{
+	int address = readBusyAndAddress();
+	if(address >= 0x40 && address <= 0x53)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+int onThird()
+{
+	int address = readBusyAndAddress();
+	if(address >= 0x14 && address <= 0x27)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+int onFourth()
+{
+	int address = readBusyAndAddress();
+	if(address >= 0x54 && address <= 0x67)
+	{
+		return 1;
+	}
+	return 0;
 }
 
 #endif

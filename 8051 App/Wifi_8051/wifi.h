@@ -8,10 +8,12 @@
 #ifndef WIFI_H
 #define WIFI_H
 
+#define IOnM P3_5
+
 #include <8051.h>
 #include "uart.h"
 
-void wifiRead(unsigned long timeout);
+char __xdata* wifiRead(unsigned long timeout, int print);
 void wifiWrite(char* string);
 void serverWriteX(char __xdata* string);
 void serverWrite(char* string);
@@ -44,20 +46,28 @@ void serverWrite(char* string)
 	}
 }
 
-void wifiRead(unsigned long timeout)
+char __xdata* wifiRead(unsigned long timeout, int print)
 {
 	char ch;
+	char __xdata buffer[200] = "";
+	int i = 0;
 
 	while(timeout > 0)
 	{
+		IOnM = 0;
 		if(RI==1)
 		{
 			ch = SBUF;
 			RI = 0;
-			printf("%c", ch);
+			buffer[i++] = ch;
+			if(print)
+			{
+				printf("%c", ch);
+			}
 		}
 		timeout--;
 	}
+	return buffer;
 }
 
 #endif
