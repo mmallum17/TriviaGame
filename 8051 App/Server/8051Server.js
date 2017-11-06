@@ -29,8 +29,8 @@ const server = net.createServer((c) => {
 
     c.on('data', function (chunk) {
         console.log(chunk.toString());
-        console.log(questions.results[0].question);
-        c.write(questions.results[0].question);
+        console.log(entities.decode(questions.results[0].question));
+        c.write(entities.decode(questions.results[0].question));
         /*c.write(chunk.toString());*/
     });
 });
