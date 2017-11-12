@@ -114,36 +114,49 @@ void writeString(char* string)
 			nextLine();
 		}
 		printf("%s ", token);
-		token = strtok(NULL, " ");
+		token = strtok(NULL, delimiter);
 	}
 }
 
 void writeStringX(char __xdata* string)
 {
-	char localString[41] = "";
+	char localString[21] = "";
 	/*char* localString;*/
 	int length;
 	int i;
 	int mult = 0;
 	char letter;
+	int offset = 0;
+	int j;
 
 	IOnM = 0;
 	length = strlen(string) + 1;
 	/*localString = (char*)malloc(length * sizeof(char));*/
-	printf("%d", length);
+	/*printf("%d", length);*/
 	/*nextLine();
 	IOnM = 0;*/
-	for(i = 0; i + 40 * mult < length; i++)
+	for(i = 0; i + 20 * mult - offset < length; i++)
 	{
 		IOnM = 0;
-		letter = string[i + 40 * mult];
+		letter = string[i + 20 * mult - offset];
 		localString[i] = letter;
-		if(i == 39)
+		/*If buffer full*/
+		if(i == 19)
 		{
-			i = 0;
-			localString[40] = 0;
+			localString[20] = 0;
+			if(string[i + 20 * mult + 1 - offset] != ' ')
+			{
+				for(j = 0; localString[19 - j] != ' '; j++)
+				{
+					localString[19 - j] = 0;
+				}
+				offset += j;
+			}
+			/*printf("%s", localString);*/
 			writeString(localString);
+			i = -1;
 			mult++;
+			delayXms(10);
 		}
 		/*printf("%c", localString[i]);*/
 	}
@@ -171,6 +184,7 @@ void writeStringX(char __xdata* string)
 	strcpy(localString, string);*/
 	/*printf("%s", localString);*/
 	/*free(localString);*/
+	/*printf("%s", localString);*/
 	writeString(localString);
 }
 

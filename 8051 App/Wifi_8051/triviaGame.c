@@ -51,40 +51,40 @@ void checkConnection()
 	int i = 0;
 
 	/* Initial Start-Up Read*/
-	wifiRead(524280, 1);
-	delayXms(200);
+	wifiRead(5242, 1, 0, "IP\r\n");
+	delayXms(500);
 
 	/*AT*/
 	clearLcd();
 	printf("AT");
 	nextLine();
 	wifiWrite("AT");
-	wifiRead(174760, 1);
-	delayXms(200);
+	wifiRead(873, 1, 0, "OK\r\n");
+	delayXms(500);
 
 	/*AT+CIPSTART*/
 	clearLcd();
 	printf("AT+CIPSTART");
 	nextLine();
 	wifiWrite("AT+CIPSTART=\"TCP\",\"18.221.30.192\",3000");
-	wifiRead(174760, 1);
-	delayXms(200);
+	wifiRead(873, 1, 0, "OK\r\n");
+	delayXms(500);
 
 	/*AT+CIPMODE*/
 	clearLcd();
 	printf("AT+CIPMODE");
 	nextLine();
 	wifiWrite("AT+CIPMODE=1");
-	wifiRead(174760, 1);
-	delayXms(200);
+	wifiRead(873, 1, 0, "OK\r\n");
+	delayXms(500);
 
 	/*AT+CIPSEND*/
 	clearLcd();
 	printf("AT+CIPSEND");
 	nextLine();
 	wifiWrite("AT+CIPSEND");
-	wifiRead(174760, 1);
-	delayXms(200);
+	wifiRead(873, 1, 0, "OK\r\n\r\n>");
+	delayXms(500);
 
 	/*Application*/
 	/*Get the date and send to server*/
@@ -105,7 +105,7 @@ void checkConnection()
 	printf("+++");
 	nextLine();
 	serverWrite("+++");
-	wifiRead(174760, 1);
+	/*wifiRead(873, 1, "trash");*/
 	delayXms(1000);
 
 	/*AT+CIPMODE*/
@@ -113,15 +113,15 @@ void checkConnection()
 	printf("AT+CIPMODE");
 	nextLine();
 	wifiWrite("AT+CIPMODE=0");
-	wifiRead(174760, 1);
-	delayXms(200);
+	wifiRead(873, 1, 0, "OK\r\n");
+	delayXms(500);
 
 	/*AT+CIPCLOSE*/
 	clearLcd();
 	printf("AT+CIPCLOSE");
 	nextLine();
 	wifiWrite("AT+CIPCLOSE");
-	wifiRead(174760, 1);
+	wifiRead(873, 1, 0, "OK\r\n");
 
 	while(1);
 }
@@ -163,9 +163,25 @@ void startGame()
 
 	/*Get questions*/
 	clearLcd();
-	serverWrite("GET");
+	serverWrite("GETQ");
 	IOnM = 0;
- 	read = wifiRead(524280, 0);
+ 	read = wifiRead(1747, 0, 1, "\r");
+ 	/*read[strlen(read) - 1] = 0;*/
+ 	writeStringX(read);
+ 	delayXms(2000);
+
+ 	/*Get Answers*/
+ 	clearLcd();
+	serverWrite("GETC");
+	IOnM = 0;
+ 	read = wifiRead(873, 0, 1, "\r");
+ 	writeStringX(read);
+ 	/*delayXms(2000);*/
+
+ 	nextLine();
+ 	serverWrite("GETA");
+ 	IOnM = 0;
+ 	read = wifiRead(873, 0, 1, "\r");
  	writeStringX(read);
  	delayXms(2000);
 	/*letter = read[0];

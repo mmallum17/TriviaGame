@@ -11,10 +11,11 @@
 #define IOnM P3_5
 
 #include <8051.h>
-#include<stdlib.h>
+#include <stdlib.h>
+#include <string.h>
 #include "uart.h"
 
-char __xdata* wifiRead(unsigned long timeout, int print);
+char __xdata* wifiRead(unsigned long timeout, int print, int serverRead, char* find);
 void wifiWrite(char* string);
 void serverWriteX(char __xdata* string);
 void serverWrite(char* string);
@@ -47,31 +48,47 @@ void serverWrite(char* string)
 	}
 }
 
-char __xdata* wifiRead(unsigned long timeout, int print)
+char __xdata* wifiRead(unsigned long timeout, int print, int serverRead, char* find)
 {
 	char ch;
 	char __xdata buffer[100] = "";
-	int i = 0;
+	char check[8] = {1, 1, 1, 1, 1, 1, 1, 0};
+	char i = 0;
+	char j = 0;
 
 
 	IOnM = 0;
 	/*buffer = (char*)calloc(1, sizeof(char));*/
-	while(timeout > 0)
+	while(timeout > 0 && strstr(check, find/*"OK\r\n"*/)== NULL)
 	{
 		IOnM = 0;
 		if(RI==1)
 		{
 			ch = SBUF;
 			RI = 0;
+			for(j = 0; j < 6; j++)
+			{
+				check[j] = check[j + 1];
+			}
+			check[6] = ch;
 			buffer[i++] = ch;
 			if(print)
 			{
 				printf("%c", ch);
+				/*writeData(ch);*/
 			}
 		}
+		/*if(find[0] == 't' && timeout % 2000 == 0)
+		{
+			printf("%lu ", timeout);
+		}*/
 		timeout--;
 	}
 	IOnM = 0;
+	if(serverRead)
+	{
+		buffer[i - 1] = 0;
+	}
 	return buffer;
 }
 

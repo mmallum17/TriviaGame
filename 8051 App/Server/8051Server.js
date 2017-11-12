@@ -4,6 +4,7 @@ const Entities = require('html-entities').AllHtmlEntities;
 
 const entities = new Entities();
 
+/*request options*/
 let options = {
     uri: 'https://opentdb.com/api.php?amount=10&type=multiple',
     json: true
@@ -11,6 +12,7 @@ let options = {
 
 let questions;
 
+/*Start Server*/
 const server = net.createServer((c) => {
     // 'connection' listener
     console.log('client connected');
@@ -29,21 +31,20 @@ const server = net.createServer((c) => {
 
     c.on('data', function (chunk) {
         console.log(chunk.toString());
+        /*Get a question*/
         if(chunk.toString() === "GETQ"){
             console.log(entities.decode(questions.results[0].question));
             c.write(entities.decode(questions.results[0].question));
-        }
+        } /*Get correct answer*/
         else if(chunk.toString() === "GETC"){
             console.log(entities.decode(questions.results[0].correct_answer));
             c.write(entities.decode(questions.results[0].correct_answer));
-        }
+        } /*Get incorrect answers*/
         else if(chunk.toString() === "GETA"){
             badAnswers = questions.results[0].incorrect_answers;
             console.log(entities.decode(badAnswers[0] + " " + badAnswers[1] + " " + badAnswers[2]));
             c.write(entities.decode(badAnswers[0] + " " + badAnswers[1] + " " + badAnswers[2]));
         }
-
-        /*c.write(chunk.toString());*/
     });
 });
 server.on('error', (err) => {
