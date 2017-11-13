@@ -36,6 +36,7 @@ int onFirst();
 int onSecond();
 int onThird();
 int onFourth();
+void toLine(int line);
 
 void initLCD()
 {
@@ -59,6 +60,7 @@ void clearLcd()
 	IOnM = 1;		/*Set to access I/O*/
 	RW = 0;			/*Clear RW for write*/
 	writeCommand(0x01);	/*Clear LCD*/
+	writeCommand(0x80);
 }
 
 void writeCommand(unsigned char command)
@@ -284,4 +286,22 @@ int onFourth()
 	return 0;
 }
 
+void toLine(int line)
+{
+	switch(line)
+	{
+		case 1:
+			writeCommand(0x80);
+			break;
+		case 2:
+			writeCommand(0xC0);
+			break;
+		case 3:
+			writeCommand(0x94);
+			break;
+		case 4:
+			writeCommand(0xD4);
+			break;
+	}
+}
 #endif

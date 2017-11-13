@@ -171,14 +171,15 @@ void startGame()
  	delayXms(2000);
 
  	/*Get Answers*/
- 	clearLcd();
+ 	/*clearLcd();
 	serverWrite("GETC");
 	IOnM = 0;
  	read = wifiRead(873, 0, 1, "\r");
  	writeStringX(read);
  	/*delayXms(2000);*/
 
- 	nextLine();
+ 	/*nextLine();*/
+ 	clearLcd();
  	serverWrite("GETA");
  	IOnM = 0;
  	read = wifiRead(873, 0, 1, "\r");
