@@ -1,17 +1,15 @@
 const net = require('net');
-const rp = require('request-promise');
+const request = require('request');
 const Entities = require('html-entities').AllHtmlEntities;
-const Promise = require('bluebird');
 const entities = new Entities();
-
-console.log(questionLength("TEST"));
 
 /*request options*/
 let options = {
-    uri: 'https://opentdb.com/api.php?amount=1&type=multiple',
-    json: true
+    url: 'https://opentdb.com/api.php?amount=1&type=multiple',
+    headers: {
+        'User-Agent': 'request'
+    }
 };
-
 
 
 /*Start Server*/
@@ -20,102 +18,12 @@ const server = net.createServer((c) => {
     console.log('client connected');
 
     /*Get Questions*/
-    // And below is a sample usage of this promiseWhile function
     let questions;
-    let valid = false;
-    rp(options).then(function(data){
-        do{
-            questions = data;
-            valid = validQuestion(questions);
-        } while(!valid);
+    request(options, function(error, response, body){
+        if(!error && response.statusCode == 200){
+            questions = JSON.parse(body);
+        }
     });
-    /*promiseWhile(function(questions){
-        if(questions == null)
-        {
-            return true;
-        }
-        let question = entities.decode(questions.results[0].question);
-        let badAnswers = questions.results[0].incorrect_answers;
-        let answers = [entities.decode(questions.results[0].correct_answer), entities.decode(badAnswers[0]), entities.decode(badAnswers[1]), entities.decode(badAnswers[2])];
-
-        console.log(question);
-        /*Check Question*/
-        /*if(questionLength(question) > 80){
-            return true;
-        }
-
-        /*Check Answers*/
-        /*for(let i = 0; i < answers.length; i++){
-            if(answers[i].length > 17)
-            {
-                return true;
-            }
-        }
-        return false;
-    }, function() {
-        // Action to run, should return a promise
-        return new Promise(function(resolve, reject) {
-            // Arbitrary 250ms async method to simulate async process
-            // In real usage it could just be a normal async event that
-            // returns a Promise.
-            setTimeout(function() {
-                rp(options).then(function(data) {
-                    questions = data;
-                    resolve(data);
-                });
-                /*resolve();*/
-            /*}, 250);
-        });
-    }).then(function(value) {
-        // Notice we can chain it because it's a Promise,
-        // this will run after completion of the promiseWhile Promise!
-        questions = value;
-        console.log(questions);
-        console.log("Done");
-    });
-    /*let questions;
-    getValidQuestion().then(function(data){
-        questions = data;
-    }).catch(function(err) {
-        console.log(err);
-    });*/
-    /*let questions;
-    let valid = false;
-    /*do{*/
-        /*rp(options).then(function(data) {
-            questions = data;
-            /*valid = validQuestion(questions);
-            console.log(valid);*/
-        /*}).catch(function(err){
-            console.log(err);
-        });*/
-        /*console.log(valid);*/
-    /*}while(!valid);*/
-
-
-
-    /*do{
-        getQuestions().then(function(data){
-            questions = data;
-            valid = validQuestion(questions);
-            /*while(!validQuestion(questions))
-            {
-                getQuestions().then(function(data2) {
-                    questions = data2;
-                });
-            }*/
-        /*});
-    }while(!valid);*/
-
-    /*do{
-        questions = getQuestions();
-    }while(!validQuestion(questions));*
-    /*rp(options).then(function(data){
-        questions = data;
-    })
-        .catch(function(err){
-            console.log(err);
-        });*/
 
     c.on('end', () => {
         console.log('client disconnected');
@@ -149,6 +57,8 @@ server.on('error', (err) => {
 server.listen(3000, () => {
     console.log('server bound');
 });
+
+
 
 function getQuestions() {
     return rp(options).then(function(data){
