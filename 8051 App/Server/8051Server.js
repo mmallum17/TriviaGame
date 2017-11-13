@@ -1,6 +1,5 @@
 const net = require('net');
 const request = require('request');
-/*const async = require('async');*/
 const Entities = require('html-entities').AllHtmlEntities;
 const entities = new Entities();
 
@@ -19,28 +18,8 @@ const server = net.createServer((c) => {
     console.log('client connected');
 
     /*Get Questions*/
-    let questions = new Array(1);/* = getQuestions(1);*/
+    let questions = new Array(1);
     let valid = false;
-    /*async.whilst(
-        function testCondition(){
-            return !valid;
-            },
-        function makeRequest(callback){
-            request(options, callback);
-        },
-        function callback(error, response, body) {
-            if (!error && response.statusCode == 200) {
-                questions[0] = JSON.parse(body);
-                valid = validQuestion(questions[0]);
-                console.log(valid);
-            }
-        }
-    );*/
-    /*let ready = false;*/
-    /*let busy = false;*/
-    /*do {
-        /*if(!busy){
-            busy = true;*/
     getQuestion();
     function getQuestion(){
         request(options, function (error, response, body) {
@@ -54,27 +33,6 @@ const server = net.createServer((c) => {
             }
         });
     }
-            /*request(options, function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    questions[0] = JSON.parse(body);
-                    valid = validQuestion(questions[0]);
-                    console.log(valid);
-                    /*ready = true;*/
-                    /*busy = false;*/
-                    /*questions[0] = body;*/
-                    /*console.log("DONE");
-                    if(validQuestion(questions[i])){
-                        i++;
-                    }*/
-                /*}
-                /*console.log(response);*/
-            /*});
-        /*}*/
-        /*while(!ready);
-        ready = false;
-    /*console.log(questions[0]);*/
-    /*}while(!valid);*/
-
 
     c.on('end', () => {
         console.log('client disconnected');
@@ -82,21 +40,14 @@ const server = net.createServer((c) => {
 
     c.on('data', function (chunk) {
         console.log(chunk.toString());
-        /*let answers = [entities.decode(questions.results[0].correct_answer), entities.decode(questions.results.)]*/
         /*Get a question*/
         if(chunk.toString() === "GETQ"){
             console.log(entities.decode(questions[0].results[0].question));
             c.write(entities.decode(questions[0].results[0].question) + "\r");
-        } /*Get correct answer*/
-        /*else if(chunk.toString() === "GETC"){
-            console.log(entities.decode(questions.results[0].correct_answer));
-            c.write(entities.decode(questions.results[0].correct_answer) + "\r");
-        }*/ /*Get incorrect answers*/
+        }
         else if(chunk.toString() === "GETA"){
             let badAnswers = questions[0].results[0].incorrect_answers;
             let answers = [entities.decode(questions[0].results[0].correct_answer), entities.decode(badAnswers[0]), entities.decode(badAnswers[1]), entities.decode(badAnswers[2])];
-            /*console.log(entities.decode(badAnswers[0] + " " + badAnswers[1] + " " + badAnswers[2]));
-            c.write(entities.decode(badAnswers[0] + " " + badAnswers[1] + " " + badAnswers[2]) + "\r");*/
             console.log(answers);
             c.write(answers[0] + " " + answers[1] + " " + answers[2] + " " + answers[3] + "\r");
         }
