@@ -18,21 +18,31 @@ const server = net.createServer((c) => {
     console.log('client connected');
 
     /*Get Questions*/
-    let questions = new Array(1);
+    let questions = new Array(2);
     let valid = false;
-    getQuestion();
-    function getQuestion(){
+    let i = 0;
+    getQuestion(10);
+    function getQuestion(amount){
         request(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                questions[0] = JSON.parse(body);
-                valid = validQuestion(questions[0]);
+                questions[i] = JSON.parse(body);
+                valid = validQuestion(questions[i]);
                 console.log(valid);
-                if(!valid){
-                    getQuestion();
+                if(!valid) {
+                    getQuestion(amount);
+                }
+                else if(i < amount - 1){
+                    i++;
+                    getQuestion(amount);
+                }
+                else{
+                    console.log(questions);
                 }
             }
         });
     }
+    let q = 0;
+    let a = 0;
 
     c.on('end', () => {
         console.log('client disconnected');
@@ -42,12 +52,12 @@ const server = net.createServer((c) => {
         console.log(chunk.toString());
         /*Get a question*/
         if(chunk.toString() === "GETQ"){
-            console.log(entities.decode(questions[0].results[0].question));
-            c.write(entities.decode(questions[0].results[0].question) + "\r");
+            console.log(entities.decode(questions[q].results[0].question));
+            c.write(entities.decode(questions[q++].results[0].question) + "\r");
         }
         else if(chunk.toString() === "GETA"){
-            let badAnswers = questions[0].results[0].incorrect_answers;
-            let answers = [entities.decode(questions[0].results[0].correct_answer), entities.decode(badAnswers[0]), entities.decode(badAnswers[1]), entities.decode(badAnswers[2])];
+            let badAnswers = questions[a].results[0].incorrect_answers;
+            let answers = [entities.decode(questions[a++].results[0].correct_answer), entities.decode(badAnswers[0]), entities.decode(badAnswers[1]), entities.decode(badAnswers[2])];
             console.log(answers);
             c.write(answers[0] + " " + answers[1] + " " + answers[2] + " " + answers[3] + "\r");
         }
