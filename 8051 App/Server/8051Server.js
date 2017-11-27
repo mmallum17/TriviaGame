@@ -68,7 +68,6 @@ const server = net.createServer((c) => {
                     answers[i] = entities.decode(badAnswers[j++]);
                 }
             }
-            /*let answers = [entities.decode(questions[a++].results[0].correct_answer), entities.decode(badAnswers[0]), entities.decode(badAnswers[1]), entities.decode(badAnswers[2])];*/
             console.log(answers);
             c.write(correctChoice + "\u001F" + answers[0] + "\u001F" + answers[1] + "\u001F" + answers[2] + "\u001F" + answers[3] + "\u001A");
         }
@@ -82,31 +81,6 @@ server.listen(3000, () => {
 });
 
 
-
-/*function getQuestions(amount) {
-    request(options, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            questions[0] = JSON.parse(body);
-            valid = validQuestion(questions[0]);
-            console.log(valid);
-    /*let i = 0;
-    let questions = new Array(amount);
-
-    console.log("HERE");
-    while(i < amount){
-        request(options, function(error, response, body){
-            if(!error && response.statusCode == 200){
-                /*questions[i] = JSON.parse(body);*/
-                /*console.log("DONE");
-                if(validQuestion(questions[i])){
-                    i++;
-                }
-            }
-            console.log(response);
-        });
-    }
-    return questions;*/
-/*}*/
 
 function validQuestion(questions) {
     /*getQuestions().then(function(questions){*/
@@ -154,29 +128,3 @@ function questionLength(question) {
     }
     return length;
 }
-
-/*function sleep(milliseconds) {
-    let start = new Date().getTime();
-    for (let i = 0; i < 1e7; i++) {
-        if ((new Date().getTime() - start) > milliseconds){
-            break;
-        }
-    }
-}*/
-
-
-
-/*let promiseWhile = function(condition, action) {
-    let resolver = Promise.defer();
-
-    let loop = function() {
-        if (!condition()) return resolver.resolve();
-        return Promise.cast(action())
-            .then(loop)
-            .catch(resolver.reject);
-    };
-
-    process.nextTick(loop);
-
-    return resolver.promise;
-};*/
