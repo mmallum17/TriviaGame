@@ -53,13 +53,13 @@ const server = net.createServer((c) => {
         /*Get a question*/
         if(chunk.toString() === "GETQ"){
             console.log(entities.decode(questions[q].results[0].question));
-            c.write(entities.decode(questions[q++].results[0].question) + "\r");
+            c.write(entities.decode(questions[q++].results[0].question) + "\u001A");
         }
         else if(chunk.toString() === "GETA"){
             let badAnswers = questions[a].results[0].incorrect_answers;
             let answers = [entities.decode(questions[a++].results[0].correct_answer), entities.decode(badAnswers[0]), entities.decode(badAnswers[1]), entities.decode(badAnswers[2])];
             console.log(answers);
-            c.write(answers[0] + " " + answers[1] + " " + answers[2] + " " + answers[3] + "\r");
+            c.write(answers[0] + "\u001F" + answers[1] + "\u001F" + answers[2] + "\u001F" + answers[3] + "\u001A");
         }
     });
 });
