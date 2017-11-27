@@ -56,10 +56,21 @@ const server = net.createServer((c) => {
             c.write(entities.decode(questions[q++].results[0].question) + "\u001A");
         }
         else if(chunk.toString() === "GETA"){
+            let correctChoice = Math.floor(Math.random() * 4);
             let badAnswers = questions[a].results[0].incorrect_answers;
-            let answers = [entities.decode(questions[a++].results[0].correct_answer), entities.decode(badAnswers[0]), entities.decode(badAnswers[1]), entities.decode(badAnswers[2])];
+            let answers = [0,0,0,0];
+            let j = 0;
+            for(let i = 0; i < 4; i++){
+                if(i === correctChoice){
+                    answers[i] = entities.decode(questions[a++].results[0].correct_answer);
+                }
+                else{
+                    answers[i] = entities.decode(badAnswers[j++]);
+                }
+            }
+            /*let answers = [entities.decode(questions[a++].results[0].correct_answer), entities.decode(badAnswers[0]), entities.decode(badAnswers[1]), entities.decode(badAnswers[2])];*/
             console.log(answers);
-            c.write(answers[0] + "\u001F" + answers[1] + "\u001F" + answers[2] + "\u001F" + answers[3] + "\u001A");
+            c.write(correctChoice + "\u001F" + answers[0] + "\u001F" + answers[1] + "\u001F" + answers[2] + "\u001F" + answers[3] + "\u001A");
         }
     });
 });
