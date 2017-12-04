@@ -10,7 +10,7 @@ let options = {
         'User-Agent': 'request'
     }*/
 };
-
+let answers;
 
 /*Start Server*/
 const server = net.createServer((c) => {
@@ -47,18 +47,18 @@ const server = net.createServer((c) => {
     c.on('end', () => {
         console.log('client disconnected');
     });
-
     c.on('data', function (chunk) {
         console.log(chunk.toString());
+        let badAnswers;
         /*Get a question*/
         if(chunk.toString() === "GETQ"){
             console.log(entities.decode(questions[q].results[0].question));
             c.write(entities.decode(questions[q++].results[0].question) + "\u001A");
         }
-        else if(chunk.toString() === "GETA"){
+        else if(chunk.toString() === "GETC"){
             let correctChoice = Math.floor(Math.random() * 4);
-            let badAnswers = questions[a].results[0].incorrect_answers;
-            let answers = [0,0,0,0];
+            badAnswers = questions[a].results[0].incorrect_answers;
+            answers = [0, 0, 0, 0];
             let j = 0;
             for(let i = 0; i < 4; i++){
                 if(i === correctChoice){
@@ -69,7 +69,20 @@ const server = net.createServer((c) => {
                 }
             }
             console.log(answers);
-            c.write(correctChoice + "\u001F" + answers[0] + "\u001F" + answers[1] + "\u001F" + answers[2] + "\u001F" + answers[3] + "\u001A");
+            c.write(correctChoice + "\u001A");
+            /*c.write(correctChoice + "\r" + answers[0] + "\r" + answers[1] + "\r" + answers[2] + "\r" + answers[3] + "\u001A");*/
+        }
+        else if(chunk.toString() === "GET0"){
+            c.write(answers[0] + "\u001A");
+        }
+        else if(chunk.toString() === "GET1"){
+            c.write(answers[1] + "\u001A");
+        }
+        else if(chunk.toString() === "GET2"){
+            c.write(answers[2] + "\u001A");
+        }
+        else if(chunk.toString() === "GET3"){
+            c.write(answers[3] + "\u001A");
         }
     });
 });
