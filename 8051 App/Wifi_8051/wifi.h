@@ -15,7 +15,7 @@
 #include <string.h>
 #include "uart.h"
 
-char __xdata* wifiRead(unsigned long timeout, int print, int serverRead, char* find);
+char __xdata* wifiRead(unsigned long timeout, int print, int serverRead, char* find, char __xdata* resp);
 void wifiWrite(char* string);
 void serverWriteX(char __xdata* string);
 void serverWrite(char* string);
@@ -48,10 +48,10 @@ void serverWrite(char* string)
 	}
 }
 
-char __xdata* wifiRead(unsigned long timeout, int print, int serverRead, char* find)
+char __xdata* wifiRead(unsigned long timeout, int print, int serverRead, char* find, char __xdata* resp)
 {
 	char ch;
-	char __xdata buffer[100] = "";
+	/*char __xdata buffer[100] = "";*/
 	char check[8] = {1, 1, 1, 1, 1, 1, 1, 0};
 	char i = 0;
 	char j = 0;
@@ -71,7 +71,10 @@ char __xdata* wifiRead(unsigned long timeout, int print, int serverRead, char* f
 				check[j] = check[j + 1];
 			}
 			check[6] = ch;
-			buffer[i++] = ch;
+			if(serverRead)
+			{
+				resp[i++] = ch;
+			}
 			if(print)
 			{
 				printf("%c", ch);
@@ -87,9 +90,9 @@ char __xdata* wifiRead(unsigned long timeout, int print, int serverRead, char* f
 	IOnM = 0;
 	if(serverRead)
 	{
-		buffer[i - 1] = 0;
+		resp[i - 1] = 0;
 	}
-	return buffer;
+	return resp;
 }
 
 #endif
