@@ -8,19 +8,39 @@
 ***********************************************/
 #ifndef KEYPAD_H
 #define KEYPAD_H
+#include <8051.h>
 
 #define IOnM P3_5
 
-unsigned char getKey();
+unsigned char getKey(unsigned int timeout);
 char __xdata* getKeys(unsigned int number);
 
-unsigned char getKey()
+unsigned char getKey(unsigned int timeout)
 {
 		unsigned char rawKey;
+		unsigned int overflows;
+
+		TR0 = 0;
+		TF0 = 0;
+		TMOD &= 0xF0;
+		TMOD |= 0x01;
+		TL0 = 0;
+		TH0 = 0;
+		overflows = timeout * 16;
+		TR0 = 1;
+
 		do
 		{
 			P1 = 0xF0;		/*Ground all rows at once*/
 			rawKey = P1 & 0xF0; 	/*Read all columns, ensure all keys open, masking unused bits*/
+			if(TF0)
+			{
+				if(--overflows == 0)
+				{
+					return 0;
+				}
+				TF0 = 0;
+			}
 		}while(rawKey != 0xF0);	/*Check till all keys released*/
 		do
 		{
@@ -99,6 +119,15 @@ unsigned char getKey()
 					}
 				}
 			}
+
+			if(TF0)
+			{
+				if(--overflows == 0)
+				{
+					return 0;
+				}
+				TF0 = 0;
+			}
 		}while(1);	/*Wait for key to be pressed*/
 }
 
@@ -111,7 +140,7 @@ char __xdata* getKeys(unsigned int number)
 	for(i = 0; i < number; i++)
 	{
 		IOnM = 0;
-		input[i] = getKey();
+		input[i] = getKey(1);
 		key = input[i];
 		writeData(key);
 	}
